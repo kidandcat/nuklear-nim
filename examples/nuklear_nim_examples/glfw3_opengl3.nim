@@ -26,7 +26,7 @@ type
     vsh: bgfx_shader_handle_t
     fsh: bgfx_shader_handle_t
     sph: bgfx_program_handle_t
-    vdecl: ptr bgfx_vertex_decl_t
+    vdecl: ptr bgfx_vertex_layout_t
     uh: bgfx_uniform_handle_t
     cc: nk_convert_config
     null: nk_draw_null_texture
@@ -45,12 +45,12 @@ var
   projection: array[16, cfloat]
   viewId:uint8
 
-proc get_avail_transient_vertex_buffers(vertexCount: uint32, vdecl: ptr bgfx_vertex_decl_t) : bool =
+proc get_avail_transient_vertex_buffers(vertexCount: uint32, vdecl: ptr bgfx_vertex_layout_t) : bool =
   if bgfx_get_avail_transient_vertex_buffer(vertexCount, vdecl) >= vertexCount:
     return true
   return false
 
-proc get_avail_transient_index_buffers(vdecl: ptr bgfx_vertex_decl_t, indexCount: uint32) : bool =
+proc get_avail_transient_index_buffers(vdecl: ptr bgfx_vertex_layout_t, indexCount: uint32) : bool =
   if bgfx_get_avail_transient_index_buffer(indexCount) >= indexCount:
     return true
   return false
@@ -67,12 +67,12 @@ proc init*(vid: uint8): bool =
 
   dev.uh = bgfx_create_uniform("s_texture", BGFX_UNIFORM_TYPE_SAMPLER, 1)
 
-  dev.vdecl = createShared(bgfx_vertex_decl_t)
-  bgfx_vertex_decl_begin(dev.vdecl, rendererType)
-  bgfx_vertex_decl_add(dev.vdecl, BGFX_ATTRIB_POSITION, 2, BGFX_ATTRIB_TYPE_FLOAT, false, false)
-  bgfx_vertex_decl_add(dev.vdecl, BGFX_ATTRIB_TEXCOORD0, 2, BGFX_ATTRIB_TYPE_FLOAT, false, false)
-  bgfx_vertex_decl_add(dev.vdecl, BGFX_ATTRIB_COLOR0, 4, BGFX_ATTRIB_TYPE_UINT8, true, false)
-  bgfx_vertex_decl_end(dev.vdecl)
+  dev.vdecl = createShared(bgfx_vertex_layout_t)
+  bgfx_vertex_layout_begin(dev.vdecl, rendererType)
+  bgfx_vertex_layout_add(dev.vdecl, BGFX_ATTRIB_POSITION, 2, BGFX_ATTRIB_TYPE_FLOAT, false, false)
+  bgfx_vertex_layout_add(dev.vdecl, BGFX_ATTRIB_TEXCOORD0, 2, BGFX_ATTRIB_TYPE_FLOAT, false, false)
+  bgfx_vertex_layout_add(dev.vdecl, BGFX_ATTRIB_COLOR0, 4, BGFX_ATTRIB_TYPE_UINT8, true, false)
+  bgfx_vertex_layout_end(dev.vdecl)
   
   dev.vertexLayout = [
     nk_draw_vertex_layout_element(
